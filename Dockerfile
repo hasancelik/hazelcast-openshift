@@ -68,6 +68,7 @@ RUN chmod +x $HZ_HOME/*.sh
 
 RUN chmod +x ${HZ_HOME}/uid_entrypoint
 RUN chmod -R g=u ${HZ_HOME} /etc/passwd
+ENV PATH=${HZ_HOME}/uid_entrypoint:${PATH}
 
 ### Switch to hazelcast user
 USER $USER_UID
