@@ -39,9 +39,6 @@ ADD stop.sh $HZ_HOME/stop.sh
 # Add licenses
 ADD licenses /licenses
 
-### Atomic Help File
-COPY description.md /tmp/
-
 ### Disable subscription-manager plugin to prevent redundant logs
 RUN sed -i 's/^enabled=.*/enabled=0/g' /etc/dnf/plugins/subscription-manager.conf
 
@@ -49,13 +46,7 @@ RUN dnf config-manager --disable && \
     dnf update -y  && rm -rf /var/cache/dnf && \
     dnf -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    dnf -y --setopt=tsflags=nodocs install java-1.8.0-openjdk-devel apr openssl &> /dev/null && \
-### Install go-md2man to help markdown to man conversion
-    dnf -y --setopt=tsflags=nodocs install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm &> /dev/null && \
-    dnf -y --setopt=tsflags=nodocs install golang-github-cpuguy83-go-md2man &> /dev/null && \
-    go-md2man -in /tmp/description.md -out /help.1 && \
-    dnf -y remove golang-github-cpuguy83-go-md2man && \
-    dnf -y clean all
+    dnf -y --setopt=tsflags=nodocs install java-1.8.0-openjdk-devel apr openssl &> /dev/null
 
 ### add hazelcast enterprise
 ADD ${REPOSITORY_URL}/release/com/hazelcast/hazelcast-enterprise-all/${HZ_VERSION}/hazelcast-enterprise-all-${HZ_VERSION}.jar $HZ_HOME
@@ -89,6 +80,10 @@ RUN cd mvnw && \
 
 ### Expose port
 EXPOSE 5701
+
+### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
+RUN chmod g=u /etc/passwd
+ENTRYPOINT [ "uid_entrypoint" ]
 
 ### Start hazelcast standalone server.
 CMD ["/bin/sh", "-c", "./start.sh"]
