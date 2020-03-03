@@ -35,6 +35,7 @@ WORKDIR $HZ_HOME
 ADD hazelcast.xml $HZ_HOME/hazelcast.xml
 ADD start.sh $HZ_HOME/start.sh
 ADD stop.sh $HZ_HOME/stop.sh
+ADD uid_entrypoint $HZ_HOME/uid_entrypoint
 
 # Add licenses
 ADD licenses /licenses
@@ -65,6 +66,7 @@ RUN useradd -l -u $USER_UID -r -g 0 -d $HZ_HOME -s /sbin/nologin -c "${USER_UID}
 RUN chown -R $USER_UID:0 $HZ_HOME $HZ_CP_MOUNT
 RUN chmod +x $HZ_HOME/*.sh
 
+RUN chmod +x ${HZ_HOME}/uid_entrypoint
 RUN chmod -R g=u ${HZ_HOME} /etc/passwd
 
 ### Switch to hazelcast user
