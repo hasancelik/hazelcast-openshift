@@ -65,7 +65,7 @@ RUN useradd -l -u $USER_UID -r -g 0 -d $HZ_HOME -s /sbin/nologin -c "${USER_UID}
 RUN chown -R $USER_UID:0 $HZ_HOME $HZ_CP_MOUNT
 RUN chmod +x $HZ_HOME/*.sh
 
-RUN chmod -R g=u ${$HZ_HOME} /etc/passwd
+RUN chmod -R g=u ${HZ_HOME} /etc/passwd
 
 ### Switch to hazelcast user
 USER $USER_UID
